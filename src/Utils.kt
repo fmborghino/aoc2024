@@ -58,3 +58,7 @@ fun <T> tee(expression: () -> T): T {
     println("${COLOR_YELLOW}$result${COLOR_RESET}")
     return result
 }
+
+fun <T> List<T>.omitAt(index: Int): List<T> {
+    return this.filterIndexed { i, _ -> i != index }
+}
