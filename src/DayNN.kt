@@ -1,5 +1,8 @@
 fun main() {
     val day="NN"
+    fun log(message: Any?) {
+        println(message)
+    }
 
     fun part1(input: List<String>): Int {
         return input.sumOf { it.toInt() }
