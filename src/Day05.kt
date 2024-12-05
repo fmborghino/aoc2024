@@ -1,5 +1,3 @@
-import jdk.jfr.internal.consumer.EventLog.update
-
 fun main() {
     val day="05"
     fun log(message: Any?) {
@@ -30,35 +28,35 @@ fun main() {
         updates: List<List<Int>>,
         rules: List<Pair<Int, Int>>
     ): Pair<List<List<Int>>, List<List<Int>>> {
-        val goodUpdate = mutableListOf<List<Int>>()
-        val poorUpdate = mutableListOf<List<Int>>()
+        val goodUpdates = mutableListOf<List<Int>>()
+        val poorUpdates = mutableListOf<List<Int>>()
         updates.forEachIndexed updates@{ i, update ->
-            update.log()
+//            update.log()
             rules.forEach rules@{ rule ->
                 val (a, b) = rulePositionsInUpdate(rule, update)
                 if (a == -1 || b == -1) {
-                    log("skip rule $rule ($a, $b)")
+//                    log("skip rule $rule ($a, $b)")
                     return@rules
                 }
                 if (a > b) {
-                    log("${i + 1} SKIP update (rule ordering) $rule")
-                    poorUpdate.add(update)
+//                    log("${i + 1} SKIP update (rule ordering) $rule")
+                    poorUpdates.add(update)
                     return@updates
                 }
-                log("rule was good $rule ($a, $b)")
+//                log("rule was good $rule ($a, $b)")
             }
-            log("${i + 1} KEEP update $update")
-            goodUpdate.add(update)
+//            log("${i + 1} KEEP update $update")
+            goodUpdates.add(update)
         }
-        return Pair(goodUpdate, poorUpdate)
+        return Pair(goodUpdates, poorUpdates)
     }
 
     fun part1(input: List<String>): Int {
         val (rules, updates) = parse(input)
 
-        val (goodUpdate, poorUpdate) = triageUpdates(updates, rules)
+        val (goodUpdates, _) = triageUpdates(updates, rules)
 
-        val middles = goodUpdate.map { update ->
+        val middles = goodUpdates.map { update ->
             val middleIndex = update.size / 2
             update[middleIndex]
         }
@@ -67,11 +65,41 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return 2 * input.sumOf { it.toInt() }
+        val (rules, updates) = parse(input)
+
+        // oof...
+        val rulesMap = rules.groupBy { it.first }.mapValues { (_, v) -> v.map { it.second } }
+//        rulesMap.log(R=)
+
+        val comp: Comparator<Int> = Comparator { a, b ->
+            val aRule = rulesMap[a]
+            val bRule = rulesMap[b]
+
+            when {
+                aRule?.contains(b) == true  -> -1
+                bRule?.contains(a) == true  -> 1
+                else -> 0
+            }
+        }
+        // ^^^
+
+        val (_, poorUpdates) = triageUpdates(updates, rules)
+
+        val fixedUpdates = mutableListOf<List<Int>>()
+        poorUpdates.forEach poorUpdates@{ poorUpdate ->
+            fixedUpdates.add(poorUpdate.sortedWith(comp))
+        }
+
+        val middles = fixedUpdates.map { update ->
+            val middleIndex = update.size / 2
+            update[middleIndex]
+        }
+
+        return middles.sum()
     }
 
     verify("Test part 1", part1(readInput("Day${day}_test")), 143)
-//    verify("Real part 1", part1(readInput("Day${day}")), 4996)
-//    verify("Test part 2", part2(readInput("Day${day}_test")) , 123)
-//    verify("Real part 2", part2(readInput("Day${day}")), 1200)
+    verify("Real part 1", part1(readInput("Day${day}")), 4996)
+    verify("Test part 2", part2(readInput("Day${day}_test")) , 123)
+    verify("Real part 2", part2(readInput("Day${day}")), 6311)
 }
