@@ -186,7 +186,13 @@ fun main() {
     }
 
     fun mainAbandoned(grid: Grid) {
-        val r1 =  bfsWordStrands(grid, "XMAS") // test 239, data 51669
+        val input = readInput("Day${day}_test")
+        val grid = Grid(input)
         val r2 = joinTheDots(grid) // test 239, data 51669
+        verify("Abandoned bfsWordStrands", bfsWordStrands(grid, "XMAS"), 239) // test 239, part1 51669
+        verify("Abandoned joinTheDots", joinTheDots(grid), 239) // test 239, part1 51669
     }
+
+    // just to make sure some refactors don't break things
+    mainAbandoned(Grid(readInput("Day${day}_test")))
 }
