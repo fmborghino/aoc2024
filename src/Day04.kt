@@ -22,7 +22,7 @@ fun main() {
         println(message)
     }
 
-    data class Pos(val x: Int, val y: Int, val depth: Int = 0)
+    data class Pos(val x: Int, val y: Int)
 
     class Grid(rows: List<String>) {
         val deadPixel = '.'
@@ -48,23 +48,22 @@ fun main() {
         }
 
         fun move(pos: Pos, dir: Dir): Pos {
-            return Pos(pos.x + dir.x, pos.y + dir.y, pos.depth)
+            return Pos(pos.x + dir.x, pos.y + dir.y)
         }
 
         // make a list of all the adjacent positions, but only if they're in bounds
         fun adjacent(pos: Pos): List<Pos> {
-            val d = pos.depth
             return buildList<Pos> {
                 // cardinals
-                if (pos.x > 0) add(Pos(pos.x - 1, pos.y, d))
-                if (pos.x < grid[0].size - 1) add(Pos(pos.x + 1, pos.y, d))
-                if (pos.y > 0) add(Pos(pos.x, pos.y - 1, d))
-                if (pos.y < grid.size - 1) add(Pos(pos.x, pos.y + 1, d))
+                if (pos.x > 0) add(Pos(pos.x - 1, pos.y))
+                if (pos.x < grid[0].size - 1) add(Pos(pos.x + 1, pos.y))
+                if (pos.y > 0) add(Pos(pos.x, pos.y - 1))
+                if (pos.y < grid.size - 1) add(Pos(pos.x, pos.y + 1))
                 // diagonals
-                if (pos.x > 0 && pos.y > 0) add(Pos(pos.x - 1, pos.y - 1, d))
-                if (pos.x < grid[0].size - 1 && pos.y < grid.size - 1) add(Pos(pos.x + 1, pos.y + 1, d))
-                if (pos.x > 0 && pos.y < grid.size - 1) add(Pos(pos.x - 1, pos.y + 1, d))
-                if (pos.x < grid[0].size - 1 && pos.y > 0) add(Pos(pos.x + 1, pos.y - 1, d))
+                if (pos.x > 0 && pos.y > 0) add(Pos(pos.x - 1, pos.y - 1))
+                if (pos.x < grid[0].size - 1 && pos.y < grid.size - 1) add(Pos(pos.x + 1, pos.y + 1))
+                if (pos.x > 0 && pos.y < grid.size - 1) add(Pos(pos.x - 1, pos.y + 1))
+                if (pos.x < grid[0].size - 1 && pos.y > 0) add(Pos(pos.x + 1, pos.y - 1))
             }
         }
 
@@ -153,22 +152,24 @@ fun main() {
         return matchingNeighbors
     }
 
+    class QState(val pos: Pos, val depth: Int)
+
     // searches grid for a word in any zigzag pattern (NYT Strands style)
     fun bfsWordStrands(grid: Grid, word: String): Int {
         val targets = word.toCharArray()
         var found = 0
-        val queue = allTheChar(grid, targets[0])
+        val queue = allTheChar(grid, targets[0]).map { pos -> QState(pos, 0)}.toMutableList()
         while (queue.isNotEmpty()) {
-            val pos = queue.removeAt(0)
-            if (grid.at(pos) == targets[pos.depth]) {
-                if (pos.depth == targets.size - 1) {
+            val qs = queue.removeAt(0)
+            if (grid.at(qs.pos) == targets[qs.depth]) {
+                if (qs.depth == targets.size - 1) {
                     found += 1
                 } else {
-                    val newPos = Pos(pos.x, pos.y, pos.depth + 1)
-                    log("from: $pos, ${grid.at(pos)}")
+                    val newPos = Pos(qs.pos.x, qs.pos.y)
+                    log("from: $qs.pos, ${grid.at(qs.pos)}")
                     grid.adjacent(newPos).forEach { neighbor ->
                         log("   > $neighbor ${grid.at(neighbor)}")
-                        queue.add(neighbor)
+                        queue.add(QState(neighbor, qs.depth + 1))
                     }
                 }
             }
