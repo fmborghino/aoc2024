@@ -1,5 +1,7 @@
 data class Pos(val x: Int, val y: Int)
 
+val NullPos = Pos(-1, -1)
+
 enum class Dir(val x: Int, val y: Int) {
     N(0, -1),
     S(0, 1),
@@ -13,17 +15,17 @@ enum class Dir(val x: Int, val y: Int) {
 
 class Grid(rows: List<String>) {
     val deadPixel = '.'
-    val target = "XMAS"
-    val grid: List<List<Char>>
+    val target = ""
+    var grid: List<List<Char>>
 
     init {
         grid = toGrid(rows)
     }
 
-    fun toGrid(rows: List<String>): List<List<Char>> {
+    fun toGrid(rows: List<String>, includes: String? = null, deadPixel: Char = '.'): List<List<Char>> {
         return rows.map { str ->
             str.map { char ->
-                if (char in target) char else deadPixel
+                if (includes == null || includes.contains(char) == true ) char else deadPixel
             }
         }
     }
@@ -57,5 +59,28 @@ class Grid(rows: List<String>) {
     fun at(pos: Pos): Char? {
         if (pos.x < 0 || pos.x >= grid[0].size || pos.y < 0 || pos.y >= grid.size) return null // out of bounds
         return grid[pos.y][pos.x]
+    }
+
+    // ugh, copy to mutable sucks, need to make this better
+    fun set(pos: Pos, newChar: Char) {
+        if (pos.y in grid.indices && pos.x in grid[pos.y].indices) {
+            // temporary mutable copy of the grid
+            val mutableGrid = grid.map { it.toMutableList() }.toMutableList()
+            mutableGrid[pos.y][pos.x] = newChar
+            grid = mutableGrid
+        } else {
+            error("grid.set(): invalid coordinates at $pos")
+        }
+    }
+
+    fun find(target: Char): Pos {
+        for (y in grid.indices) {
+            for (x in grid[y].indices) {
+                if (grid[y][x] == target) {
+                    return Pos(x, y)
+                }
+            }
+        }
+        return NullPos
     }
 }
