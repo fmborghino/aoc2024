@@ -30,21 +30,21 @@ fun main() {
 
     fun part1(input: List<String>): Int {
         val grid = Grid(input)
-        val allPosDir = mutableListOf<PosDir>()
+        val ledger = mutableListOf<PosDir>()
 //        grid.log(true)
         var guardPos = grid.find('^')
-        var guardDir = dirMap[grid.at(guardPos) ?: error("unexpected char at $guardPos")]
+        var guardDir = dirMap['^']
         log("guard at $guardPos going $guardDir")
-        var steps = 1
         while (true) {
-            allPosDir.add(PosDir(guardPos, guardDir))
+            ledger.add(PosDir(guardPos, guardDir))
             grid.set(guardPos, 'X')
             val nextPos = grid.move(guardPos, guardDir)
             val nextChar = grid.at(nextPos)
             when (nextChar) {
                 null -> {
                     log("step out going from $guardPos to $nextPos heading $guardDir")
-                    return steps
+                    // ie how many steps, and don't recount revisited positions
+                    return ledger.distinctBy { it.pos }.size
                 }
                 '#' -> {
                     log("turn at $guardPos from $guardDir to turn[guardDir]")
@@ -52,7 +52,6 @@ fun main() {
                 }
                 '.', 'X' -> {
                     log("move from $guardPos to $nextPos")
-                    if (nextChar == '.') steps += 1 // don't count already visited positions
                     guardPos = nextPos
                 }
                 else -> error("oops wonky char $nextChar at $nextPos")
