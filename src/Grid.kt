@@ -14,8 +14,6 @@ enum class Dir(val x: Int, val y: Int) {
 }
 
 class Grid(rows: List<String>) {
-    val deadPixel = '.'
-    val target = ""
     var grid: List<List<Char>>
 
     init {
