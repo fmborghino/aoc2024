@@ -34,6 +34,13 @@ class Grid(rows: List<String>) {
         }.toMutableList()
     }
 
+    fun copy(): Grid {
+        val newGridData = grid.map { it.toMutableList() }.toMutableList()
+        val newGrid = Grid(emptyList())
+        newGrid.grid = newGridData
+        return newGrid
+    }
+
     fun log(space: Boolean = false) {
         grid.forEach { line ->
             println(line.joinToString(if (space) " " else ""))
