@@ -14,7 +14,7 @@ enum class Dir(val x: Int, val y: Int) {
 }
 
 class Grid(rows: List<String>) {
-    var grid: List<List<Char>>
+    var grid: MutableList<MutableList<Char>>
 
     init {
         grid = toGrid(rows)
@@ -26,12 +26,12 @@ class Grid(rows: List<String>) {
     val height: Int
         get() = grid.size
 
-    fun toGrid(rows: List<String>, includes: String? = null, deadPixel: Char = '.'): List<List<Char>> {
+    fun toGrid(rows: List<String>, includes: String? = null, deadPixel: Char = '.'): MutableList<MutableList<Char>> {
         return rows.map { str ->
             str.map { char ->
                 if (includes == null || includes.contains(char) == true ) char else deadPixel
-            }
-        }
+            }.toMutableList()
+        }.toMutableList()
     }
 
     fun log(space: Boolean = false) {
@@ -65,13 +65,9 @@ class Grid(rows: List<String>) {
         return grid[pos.y][pos.x]
     }
 
-    // ugh, copy to mutable sucks, need to make this better
     fun set(pos: Pos, newChar: Char) {
         if (pos.y in grid.indices && pos.x in grid[pos.y].indices) {
-            // temporary mutable copy of the grid
-            val mutableGrid = grid.map { it.toMutableList() }.toMutableList()
-            mutableGrid[pos.y][pos.x] = newChar
-            grid = mutableGrid
+            grid[pos.y][pos.x] = newChar
         } else {
             error("grid.set(): invalid coordinates at $pos")
         }

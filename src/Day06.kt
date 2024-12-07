@@ -37,7 +37,7 @@ fun main() {
             val posDir = PosDir(guardPos, guardDir)
             if (part == 2 && posDir in ledger) return 1
             ledger.add(posDir)
-//            grid.set(guardPos, 'X') // leave a trai of breadcrumbs
+            grid.set(guardPos, 'X') // leave a trail of breadcrumbs
             val nextPos = grid.move(guardPos, guardDir)
             val nextChar = grid.at(nextPos)
             when (nextChar) {
