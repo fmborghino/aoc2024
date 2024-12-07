@@ -1,3 +1,4 @@
+import java.lang.invoke.MethodHandles.loop
 import kotlin.to
 
 data class PosDir(val pos: Pos, val dir: Dir)
@@ -75,10 +76,15 @@ fun main() {
         var guardDir = dirMap['^']
 
         var loops = 0
-        for (x in 0..grid.width) {
-            for (y in 0..grid.height) {
-                // tweak grid with grid.set(Pos(x, y), 'O')
-                loops += walk(grid, guardPos, guardDir, part = 2)
+        val loopMax = grid.height * grid.width
+        var count = 1
+        for (y in 0..<grid.height) {
+            for (x in 0..<grid.width) {
+                if (count % 100 == 0) println("$count of $loopMax, found $loops")
+                val gridCopy: Grid = grid.copy()
+                gridCopy.set(Pos(x, y), 'O')
+                loops += walk(gridCopy, guardPos, guardDir, part = 2)
+                count += 1
             }
         }
 
@@ -87,6 +93,7 @@ fun main() {
 
     verify("Test part 1", part1(readInput("Day${day}_test")), 41)
     verify("Real part 1", part1(readInput("Day${day}")), 5086)
-//    verify("Test part 2", part2(readInput("Day${day}_test")), 6)
-//    verify("Real part 2", part2(readInput("Day${day}")), 1200)
+    verify("Test part 2", part2(readInput("Day${day}_test")), 6)
+    println("go make coffee this is gonna take a few minutes...")
+    verify("Real part 2", part2(readInput("Day${day}")), 1770)
 }
