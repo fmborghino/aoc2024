@@ -1,6 +1,12 @@
 import kotlin.to
 
-typealias PosDir = Pair<Pos, Dir>
+data class PosDir(val pos: Pos, val dir: Dir)
+
+class StrictMap<K, V>(private val map: Map<K, V>) {
+    operator fun get(key: K): V {
+        return map[key] ?: throw NoSuchElementException("key $key is missing")
+    }
+}
 
 fun main() {
     val day="06"
@@ -8,32 +14,32 @@ fun main() {
 //        println(message)
     }
 
-    val dirMap = mapOf<Char, Dir>(
+    val dirMap = StrictMap(mapOf<Char, Dir>(
         '^' to Dir.N,
         '>' to Dir.E,
         'v' to Dir.S,
         '<' to Dir.W,
-    )
+    ))
 
-    val turnRight = mapOf<Dir, Dir>(
+    val turnRight = StrictMap(mapOf<Dir, Dir>(
         Dir.N to Dir.E,
         Dir.E to Dir.S,
         Dir.S to Dir.W,
         Dir.W to Dir.N,
-    )
+    ))
 
     fun part1(input: List<String>): Int {
         val grid = Grid(input)
         val allPosDir = mutableListOf<PosDir>()
 //        grid.log(true)
         var guardPos = grid.find('^')
-        var guardDir = dirMap[grid.at(guardPos)]
+        var guardDir = dirMap[grid.at(guardPos) ?: error("unexpected char at $guardPos")]
         log("guard at $guardPos going $guardDir")
         var steps = 1
         while (true) {
-            allPosDir.add(Pair(guardPos, guardDir!!))
+            allPosDir.add(PosDir(guardPos, guardDir))
             grid.set(guardPos, 'X')
-            val nextPos = grid.move(guardPos, guardDir!!)
+            val nextPos = grid.move(guardPos, guardDir)
             val nextChar = grid.at(nextPos)
             when (nextChar) {
                 null -> {
