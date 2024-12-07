@@ -50,12 +50,13 @@ fun main() {
         tokens.forEach { token ->
 //            log("$token $result")
             when (token) {
-                "+", "*" -> operation = token
+                "+", "*", "||" -> operation = token
                 else -> {
                     val operand = token.toLong()
                     when (operation) {
                         "+" -> result += operand
                         "*" -> result *= operand
+                        "||" -> result = (result.toString() + operand.toString()).toLong()
                     }
                 }
             }
@@ -63,12 +64,12 @@ fun main() {
         return result
     }
 
-    fun part1(input: List<String>): Long {
+    fun part1(input: List<String>, operands: List<String>): Long {
         val inputs = parse(input)
         var result = 0L
         inputs.forEach inputs@{ input ->
 //            input.log()
-            val calcCombos = generateCalcCombos(input.args, listOf("*", "+"))
+            val calcCombos = generateCalcCombos(input.args, operands)
             calcCombos.forEach { calcCombo ->
 //                calcCombo.log()
                 val r = calculate(calcCombo)
@@ -85,8 +86,8 @@ fun main() {
         return 2 * input.sumOf { it.toInt() }
     }
 
-    verify("Test part 1", part1(readInput("Day${day}_test")), 3749)
-    verify("Real part 1", part1(readInput("Day${day}")), 1708857123053)
-//    verify("Test part 2", part2(readInput("Day${day}_test")) , 12)
-//    verify("Real part 2", part2(readInput("Day${day}")), 1200)
+    verify("Test part 1", part1(readInput("Day${day}_test"), listOf("*", "+")), 3749)
+    verify("Real part 1", part1(readInput("Day${day}"), listOf("*", "+")), 1708857123053)
+    verify("Test part 2", part1(readInput("Day${day}_test"), listOf("*", "+", "||")), 11387)
+    verify("Real part 2", part1(readInput("Day${day}"), listOf("*", "+", "||")), 189207836795655)
 }
