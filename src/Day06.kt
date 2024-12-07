@@ -28,36 +28,61 @@ fun main() {
         Dir.W to Dir.N,
     ))
 
-    fun part1(input: List<String>): Int {
-        val grid = Grid(input)
+    fun walk(grid: Grid, startPos: Pos, startDir: Dir, part: Int = 1): Int {
         val ledger = mutableListOf<PosDir>()
-//        grid.log(true)
-        var guardPos = grid.find('^')
-        var guardDir = dirMap['^']
-        log("guard at $guardPos going $guardDir")
+        var guardPos = startPos
+        var guardDir = startDir
+
         while (true) {
-            ledger.add(PosDir(guardPos, guardDir))
-            grid.set(guardPos, 'X')
+            val posDir = PosDir(guardPos, guardDir)
+            if (part == 2 && posDir in ledger) return 1
+            ledger.add(posDir)
+//            grid.set(guardPos, 'X') // leave a trai of breadcrumbs
             val nextPos = grid.move(guardPos, guardDir)
             val nextChar = grid.at(nextPos)
             when (nextChar) {
                 null -> {
                     log("step out going from $guardPos to $nextPos heading $guardDir")
                     // ie how many steps, and don't recount revisited positions
-                    return ledger.distinctBy { it.pos }.size
+                    return if (part == 1) ledger.distinctBy { it.pos }.size else 0
                 }
-                '#' -> {
+                '#', 'O' -> {
                     log("turn at $guardPos from $guardDir to turn[guardDir]")
                     guardDir = turnRight[guardDir]
                 }
-                '.', 'X' -> {
+                '.', 'X', '^' -> {
                     log("move from $guardPos to $nextPos")
                     guardPos = nextPos
                 }
                 else -> error("oops wonky char $nextChar at $nextPos")
             }
         }
-        return -1 // not reached
+    }
+
+    fun part1(input: List<String>): Int {
+        val grid = Grid(input)
+//        grid.log(true)
+        var guardPos = grid.find('^')
+        var guardDir = dirMap['^']
+        log("guard at $guardPos going $guardDir")
+        val result = walk(grid, guardPos, guardDir)
+        return result
+    }
+
+    fun part2(input: List<String>): Int {
+        val grid = Grid(input)
+        var guardPos = grid.find('^')
+        var guardDir = dirMap['^']
+
+        var loops = 0
+        for (x in 0..grid.width) {
+            for (y in 0..grid.height) {
+                // tweak grid with grid.set(Pos(x, y), 'O')
+                loops += walk(grid, guardPos, guardDir, part = 2)
+            }
+        }
+
+        return loops
     }
 
     verify("Test part 1", part1(readInput("Day${day}_test")), 41)

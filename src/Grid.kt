@@ -20,6 +20,12 @@ class Grid(rows: List<String>) {
         grid = toGrid(rows)
     }
 
+    val width: Int
+        get() = if (grid.isNotEmpty()) grid[0].size else 0
+
+    val height: Int
+        get() = grid.size
+
     fun toGrid(rows: List<String>, includes: String? = null, deadPixel: Char = '.'): List<List<Char>> {
         return rows.map { str ->
             str.map { char ->
