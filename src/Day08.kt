@@ -30,7 +30,35 @@ fun main() {
         return listOf(endpoint1, endpoint2)
     }
 
-    fun part1(input: List<String>): Int {
+    fun calculateExtendedEndpoints(posA: Pos, posB: Pos, width: Int, height: Int): List<Pos> {
+        val dx = posB.x - posA.x
+        val dy = posB.y - posA.y
+
+        val result = mutableListOf<Pos>()
+
+        // negative direction
+        var currentX = posA.x
+        var currentY = posA.y
+        while (currentX in 0 until width && currentY in 0 until height) {
+            result.add(Pos(currentX, currentY))
+            currentX -= dx
+            currentY -= dy
+        }
+
+        // positive direction
+        currentX = posB.x
+        currentY = posB.y
+        while (currentX in 0 until width && currentY in 0 until height) {
+            result.add(Pos(currentX, currentY))
+            currentX += dx
+            currentY += dy
+        }
+
+        return result
+    }
+
+
+    fun part1(input: List<String>, part: Int = 1): Int {
         val grid = Grid(input)
 //        grid.log(true)
         val letterToPos = scanLetters(grid)
@@ -41,7 +69,12 @@ fun main() {
             val pairs = uniquePairs(posList)
 //            pairs.log()
             pairs.forEach { posPair ->
-                val endPoints = calculateExtendedEndpoints(posPair.first, posPair.second)
+                val endPoints = if (part == 1) {
+                    calculateExtendedEndpoints(posPair.first, posPair.second)
+                }
+                else {
+                    calculateExtendedEndpoints(posPair.first, posPair.second, grid.width, grid.height)
+                }
 //                endPoints.log("$posPair -> ")
                 endPoints.forEach { endPoint ->
                     val c = grid.at(endPoint)
@@ -56,12 +89,8 @@ fun main() {
         return ledger.toSet().size
     }
 
-    fun part2(input: List<String>): Int {
-        return 2 * input.sumOf { it.toInt() }
-    }
-
     verify("Test part 1", part1(readInput("Day${day}_test")), 14)
-//    verify("Real part 1", part1(readInput("Day${day}")), 392)
-//    verify("Test part 2", part2(readInput("Day${day}_test")) , 34)
-//    verify("Real part 2", part2(readInput("Day${day}")), 1200)
+    verify("Real part 1", part1(readInput("Day${day}")), 392)
+    verify("Test part 2", part1(readInput("Day${day}_test"), part=2) , 34)
+    verify("Real part 2", part1(readInput("Day${day}"), part=2), 1235)
 }
