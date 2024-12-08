@@ -5,3 +5,4 @@ build
 src/**/*.txt
 data/**/*.txt
 local.properties
+/src/Scratch.kt

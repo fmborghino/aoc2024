@@ -19,7 +19,7 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  * The cleaner shorthand for printing output.
  */
 fun Any?.println() = println(this)
-fun Any?.log() = println(this)
+fun Any?.log(pre: String = "") = println("$pre$this")
 
 /**
  * Generate Pair<Int, Int> for range N x N where N is 0 to (n-1)
@@ -61,4 +61,14 @@ fun <T> tee(expression: () -> T): T {
 
 fun <T> List<T>.omitAt(index: Int): List<T> {
     return this.filterIndexed { i, _ -> i != index }
+}
+
+fun <T> uniquePairs(things: List<T>): List<Pair<T, T>> {
+    val pairs = mutableListOf<Pair<T, T>>()
+    for (i in things.indices) {
+        for (j in i + 1 until things.size) {
+            pairs.add(things[i] to things[j])
+        }
+    }
+    return pairs
 }

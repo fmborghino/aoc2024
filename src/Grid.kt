@@ -90,4 +90,14 @@ class Grid(rows: List<String>) {
         }
         return NullPos
     }
+
+    fun allPos(): List<Pos> {
+        return buildList<Pos> {
+            for (y in grid.indices) {
+                for (x in grid[y].indices) {
+                    add(Pos(x, y))
+                }
+            }
+        }
+    }
 }
