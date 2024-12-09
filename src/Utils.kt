@@ -72,3 +72,10 @@ fun <T> uniquePairs(things: List<T>): List<Pair<T, T>> {
     }
     return pairs
 }
+
+fun <T> List<T>.indexOfSublist(sublist: List<T>): Int {
+    if (sublist.isEmpty() || sublist.size > this.size) return -1
+
+    return this.windowed(sublist.size)
+        .indexOfFirst { it == sublist }
+}
