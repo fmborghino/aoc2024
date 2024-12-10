@@ -52,18 +52,23 @@ class Grid(rows: List<String>) {
     }
 
     // make a list of all the adjacent positions, but only if they're in bounds
-    fun adjacent(pos: Pos): List<Pos> {
+    fun adjacent(pos: Pos, includeCardinal: Boolean = true, includeDiagonal: Boolean = true): List<Pos> {
         return buildList<Pos> {
             // cardinals
-            if (pos.x > 0) add(Pos(pos.x - 1, pos.y))
-            if (pos.x < grid[0].size - 1) add(Pos(pos.x + 1, pos.y))
-            if (pos.y > 0) add(Pos(pos.x, pos.y - 1))
-            if (pos.y < grid.size - 1) add(Pos(pos.x, pos.y + 1))
+            if (includeCardinal) {
+                if (pos.x > 0) add(Pos(pos.x - 1, pos.y))
+                if (pos.x < grid[0].size - 1) add(Pos(pos.x + 1, pos.y))
+                if (pos.y > 0) add(Pos(pos.x, pos.y - 1))
+                if (pos.y < grid.size - 1) add(Pos(pos.x, pos.y + 1))
+            }
+
             // diagonals
-            if (pos.x > 0 && pos.y > 0) add(Pos(pos.x - 1, pos.y - 1))
-            if (pos.x < grid[0].size - 1 && pos.y < grid.size - 1) add(Pos(pos.x + 1, pos.y + 1))
-            if (pos.x > 0 && pos.y < grid.size - 1) add(Pos(pos.x - 1, pos.y + 1))
-            if (pos.x < grid[0].size - 1 && pos.y > 0) add(Pos(pos.x + 1, pos.y - 1))
+            if (includeDiagonal) {
+                if (pos.x > 0 && pos.y > 0) add(Pos(pos.x - 1, pos.y - 1))
+                if (pos.x < grid[0].size - 1 && pos.y < grid.size - 1) add(Pos(pos.x + 1, pos.y + 1))
+                if (pos.x > 0 && pos.y < grid.size - 1) add(Pos(pos.x - 1, pos.y + 1))
+                if (pos.x < grid[0].size - 1 && pos.y > 0) add(Pos(pos.x + 1, pos.y - 1))
+            }
         }
     }
 
@@ -89,6 +94,19 @@ class Grid(rows: List<String>) {
             }
         }
         return NullPos
+    }
+
+    fun findAll(target: Char): List<Pos> {
+        val result = mutableListOf<Pos>()
+        for (y in 0..height) {
+            for (x in 0..width) {
+                val p = Pos(x, y)
+                if (this.at(p) == target) {
+                    result.add(p)
+                }
+            }
+        }
+        return result
     }
 
     fun allPos(): List<Pos> {
