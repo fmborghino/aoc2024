@@ -6,3 +6,4 @@ src/**/*.txt
 data/**/*.txt
 local.properties
 /src/Scratch.kt
+/src/scratch.ipynb
