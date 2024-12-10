@@ -5,7 +5,7 @@ fun main() {
     }
 
     // counts paths from '0' to '9', return a ledger of the '9' positions
-    fun bfsPaths(grid: Grid, start: Pos): Set<Pos> {
+    fun bfsPaths(grid: Grid, start: Pos): Pair<Set<Pos>, List<Pos>> {
         var foundNinesList = mutableListOf<Pos>()
         var foundNinesSet = mutableSetOf<Pos>()
         val queue = mutableListOf<Pos>(start)
@@ -21,7 +21,7 @@ fun main() {
                     .forEach { neighbor -> queue.add(neighbor) }
             }
         }
-        return foundNinesSet
+        return Pair(foundNinesSet, foundNinesList)
     }
 
     fun part1(input: List<String>): Int {
@@ -30,18 +30,23 @@ fun main() {
         val starts = grid.findAll('0')
 //        starts.log()
         return starts.sumOf { pos ->
-            val paths = bfsPaths(grid, pos).size
+            val paths = bfsPaths(grid, pos).first.size
 //            paths.log()
             paths
         }
     }
 
     fun part2(input: List<String>): Int {
-        return 0
-    }
+        val grid = Grid(input)
+        val starts = grid.findAll('0')
+        return starts.sumOf { pos ->
+            val paths = bfsPaths(grid, pos).second.size
+//            paths.log()
+            paths
+        }    }
 
     verify("Test part 1", part1(readInput("Day${day}_test")), 36)
     verify("Real part 1", part1(readInput("Day${day}")), 682)
-//    verify("Test part 2", part2(readInput("Day${day}_test")) , 81)
-//    verify("Real part 2", part2(readInput("Day${day}")), 1200)
+    verify("Test part 2", part2(readInput("Day${day}_test")) , 81)
+    verify("Real part 2", part2(readInput("Day${day}")), 1511)
 }
