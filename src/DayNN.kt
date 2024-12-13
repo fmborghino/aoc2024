@@ -5,11 +5,11 @@ fun main() {
     }
 
     fun part1(input: List<String>): Int {
-        return input.sumOf { it.toInt() }
+        return input.sumOf { it.split(" ").sumOf { it.toInt() } }
     }
 
     fun part2(input: List<String>): Int {
-        return 2 * input.sumOf { it.toInt() }
+        return 2 * input.sumOf { it.split(" ").sumOf { it.toInt() } }
     }
 
     verify("Test part 1", part1(readInput("Day${day}_test")), 1)
