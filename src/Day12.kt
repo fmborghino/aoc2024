@@ -38,21 +38,26 @@ fun main() {
         return Plot(region, sharedFences)
     }
 
-    fun part1(input: List<String>): Int {
-        val grid = Grid(input)
-//        grid.log(true)
-        val allPos = grid.allPos()
-//        allPos.log()
+    fun allPlots(allPos: List<Pos>, grid: Grid): MutableList<Plot> {
         var allPlots: MutableList<Plot> = mutableListOf()
         allPos.forEach { pos ->
             if (pos !in allPlots.map { it.region }.flatten()) {
                 val plot = walkFromPos(grid, pos)
                 allPlots.add(plot)
-//                plot.log(">>> plot> ")
+    //                plot.log(">>> plot> ")
             } else {
-//                log("already visited $pos ${grid.at(pos)}")
+    //                log("already visited $pos ${grid.at(pos)}")
             }
         }
+        return allPlots
+    }
+
+    fun part1(input: List<String>): Int {
+        val grid = Grid(input)
+//        grid.log(true)
+        val allPos = grid.allPos()
+//        allPos.log()
+        var allPlots: MutableList<Plot> = allPlots(allPos, grid)
         var result = 0
         allPlots.forEach { plot ->
 //            log(plot)
