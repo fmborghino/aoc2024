@@ -19,7 +19,12 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  * The cleaner shorthand for printing output.
  */
 fun Any?.println() = println(this)
-fun Any?.log(pre: String = "") = println("$pre$this")
+fun <T> T?.log(pre: String = "") = println("$pre$this")
+
+//fun <T> T?.log(pre: String = ""): T? {
+//    println("$pre$this")
+//    return this
+//}
 
 /**
  * Generate Pair<Int, Int> for range N x N where N is 0 to (n-1)
@@ -79,3 +84,10 @@ fun <T> List<T>.indexOfSublist(sublist: List<T>): Int {
     return this.windowed(sublist.size)
         .indexOfFirst { it == sublist }
 }
+
+data class Tuple4<A, B, C, D>(
+    val first: A,
+    val second: B,
+    val third: C,
+    val fourth: D
+)

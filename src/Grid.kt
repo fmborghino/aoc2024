@@ -1,4 +1,13 @@
-data class Pos(val x: Int, val y: Int)
+data class Pos(val x: Int, val y: Int) {
+    val n: Pos
+        get() = Pos(x + Dir.N.x, y + Dir.N.y)
+    val e: Pos
+        get() = Pos(x + Dir.E.x, y + Dir.E.y)
+    val s: Pos
+        get() = Pos(x + Dir.S.x, y + Dir.S.y)
+    val w: Pos
+        get() = Pos(x + Dir.W.x, y + Dir.W.y)
+}
 
 val NullPos = Pos(-1, -1)
 
@@ -49,6 +58,22 @@ class Grid(rows: List<String>) {
 
     fun move(pos: Pos, dir: Dir): Pos {
         return Pos(pos.x + dir.x, pos.y + dir.y)
+    }
+
+    fun n(pos: Pos): Pos {
+        return move(pos, Dir.N)
+    }
+
+    fun e(pos: Pos): Pos {
+        return move(pos, Dir.E)
+    }
+
+    fun s(pos: Pos): Pos {
+        return move(pos, Dir.S)
+    }
+
+    fun w(pos: Pos): Pos {
+        return move(pos, Dir.W)
     }
 
     // make a list of all the adjacent positions, but only if they're in bounds
