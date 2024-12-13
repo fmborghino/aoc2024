@@ -67,13 +67,22 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
+        val grid = Grid(input)
+        val allPos = grid.allPos()
+        var allPlots: MutableList<Plot> = allPlots(allPos, grid)
+
         return 0
     }
 
-    verify("Test part 1.1", part1(readInput("Day${day}_test1")), 140)
-    verify("Test part 1.2", part1(readInput("Day${day}_test2")), 772)
-    verify("Test part 1.3", part1(readInput("Day${day}_test3")), 1930)
+    verify("Test part 1 t1", part1(readInput("Day${day}_test1")), 140)
+    verify("Test part 1 t2", part1(readInput("Day${day}_test2")), 772)
+    verify("Test part 1 t3", part1(readInput("Day${day}_test3")), 1930)
     verify("Real part 1", part1(readInput("Day${day}")), 1573474)
-//    verify("Test part 2", part2(readInput("Day${day}_test")) , 12)
+
+//    verify("Test part 2 t1", part1(readInput("Day${day}_test1")), 80)
+//    verify("Test part 2 t2", part1(readInput("Day${day}_test2")), 436)
+//    verify("Test part 2 t3", part1(readInput("Day${day}_test3")), 1206)
+//    verify("Test part 2 t4", part1(readInput("Day${day}_test4")), 236)
+//    verify("Test part 2 t5", part1(readInput("Day${day}_test5")), 368)
 //    verify("Real part 2", part2(readInput("Day${day}")), 1200)
 }
