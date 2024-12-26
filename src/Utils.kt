@@ -85,6 +85,11 @@ fun <T> List<T>.indexOfSublist(sublist: List<T>): Int {
         .indexOfFirst { it == sublist }
 }
 
+// mod that handles going negative
+fun wrap(number: Int , modulus: Int): Int {
+    return ((number % modulus) + modulus) % modulus
+}
+
 data class Tuple4<A, B, C, D>(
     val first: A,
     val second: B,
